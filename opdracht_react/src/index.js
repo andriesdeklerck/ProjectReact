@@ -108,9 +108,25 @@ class Game extends React.Component {
   }
 
   setGame() {
+    this.state.settedGame = Array();
     this.setState({
       settedGame: this.state.settedGame.concat(this.state.makedGuess)
     });
+    this.state.makedGuess = Array(4);
+    this.state.a = 0;
+    this.state.value = !this.state.value;
+  }
+
+  makeGuess() {
+    if (JSON.stringify(this.state.makedGuess) == JSON.stringify(this.state.settedGame)) {
+      this.state.value = !this.state.value;
+      this.state.a = 0;
+      alert('You have won: ' + this.state.makedGuess + " " + this.state.settedGame);
+    }
+    else {
+      this.state.makedGuess = Array(4);
+      this.state.a = 0;
+    }
   }
 
   renderButton(i) {
@@ -118,6 +134,7 @@ class Game extends React.Component {
       <SelectedButton
         value={i}
         onClick={() => this.handleClick(i)}
+        test={this.state.test}
       />
     );
   }
@@ -135,20 +152,65 @@ class Game extends React.Component {
         {this.renderButton(7)}
         {/* <AddToBoard value={this.props.selectedColor} /> */}
         <div id="gameColor">Selected color</div>
-        <button onClick={() => this.setGame()}>Set Color</button>
+        <button onClick={() => this.setGame()} disabled={this.state.value}>Set Color</button>
+        <button onClick={() => this.makeGuess()}>Make Guess</button>
+      </div>
+    );
+  }
+}
+
+// ReactDOM.render(
+//   <Name />,
+//   document.getElementById('user')
+// );
+
+ReactDOM.render(
+  <Game />,
+  document.getElementById('game')
+);
+
+class AddItem extends React.Component {
+  constructor() {
+    super();
+    this.state = { value: '' };
+    this.onChange = this.onChange.bind(this);
+    this.add = this.add.bind(this);
+  }
+
+  add() {
+    this.props.onButtonClick(this.state.value);
+    this.setState({ value: '' });
+  }
+
+  onChange(e) {
+    this.setState({ value: e.target.value });
+  }
+
+  render() {
+    return (
+      <div className="add-item">
+        <input
+          type="text"
+          className="add-item__input"
+          value={this.state.value}
+          onChange={this.onChange}
+          placeholder={this.props.placeholder}
+        />
+        <button
+          disabled={!this.state.value}
+          className="add-item__button"
+          onClick={this.add}
+        >
+          Add
+        </button>
       </div>
     );
   }
 }
 
 ReactDOM.render(
-  <Name />,
-  document.getElementById('user')
-);
-
-ReactDOM.render(
-  <Game />,
-  document.getElementById('game')
+  <AddItem placeholder="Value" onButtonClick={v => console.log(v)} />,
+  document.getElementById('View')
 );
 
 // If you want to start measuring performance in your app, pass a function
